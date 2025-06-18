@@ -15,6 +15,9 @@ Source:
 
 City of Vancouver Open Data Portal – “2023–2026 Capital Plan and 2025 Capital Budget with proposed four-year Capital Plan allocations.” This public dataset details the City’s four-year capital investment plan, including original 2023–2026 plans, updates in the 2025 budget, funding sources, and planned allocations. It links new 2025 capital budget requests to previously approved multi-year projects, reflecting Council-approved changes in December 2024. The data covers 12 major service categories (e.g. Housing, Childcare, Parks, Transportation, etc.), but our analysis concentrates on Housing and Childcare funding trends.
 
+![Image](https://github.com/user-attachments/assets/64f14aec-d6c1-4263-a320-d26dfc30cf2d)
+![Image](https://github.com/user-attachments/assets/a422e756-4100-4333-90d4-7afb83d9a6ff)
+
 Size & Format: 
 
 The dataset contains 17 columns and includes aggregated funding figures (original plan, adjustments, revised plan) and categorizations for each project or program. For example, it records the 2023–2026 Original Capital Plan amount, any changes made by 2025, and the Revised Capital Plan total for each service category. It also provides a breakdown of allocations across the years 2023, 2024, 2025, and 2026, enabling year-by-year trend analysis (housing investments peaked in 2024, while childcare funding grows steadily through 2026).
