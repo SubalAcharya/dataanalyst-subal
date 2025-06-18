@@ -28,6 +28,8 @@ Methodology
 The DAP follows a structured ETL/ELT pipeline to convert raw data into meaningful insights. The overall architecture is illustrated below, showing how data flows from ingestion to analysis in AWS:
 Architecture of the AWS-based DAP: Raw open data is stored in Amazon S3, cleaned with AWS Glue DataBrew, cataloged in AWS Glue Data Catalog via a crawler, and queried using Amazon Athena. Processed results and queries can be visualized or saved back to S3. This serverless pipeline is scalable and cost-efficient.
 
+![Image](https://github.com/user-attachments/assets/f8076d31-e90b-4b69-b912-d0cb7f202904)
+
 The implementation consisted of several key steps:
 
 •	Data Ingestion: 
