@@ -74,6 +74,7 @@ Deliverables
 
 The AWS-based DAP produced several deliverables demonstrating the successful implementation and insights:
 Annual funding allocations for Housing vs. Childcare (2023–2026). This visualization highlights that Housing projects received the highest funding in 2024 (then stabilized), while Childcare funding rose steadily each year, nearly doubling by 2026.
+![Image](https://github.com/user-attachments/assets/d746ade9-6060-4e2c-a121-32f36374dbe7)
 
 •	Cleaned & Structured Dataset: A refined version of the capital plan data, free of inconsistencies. This is stored in S3 (in a structured folder hierarchy) and cataloged for easy access. It can be re-used for further analysis or combined with other city datasets.
 
