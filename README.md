@@ -101,6 +101,8 @@ AWS KMS Encryption for S3
 
 To protect data at rest, we enabled server-side encryption on the S3 bucket using AWS Key Management Service (KMS). AWS KMS manages encryption keys and integrates with S3 so that all objects are encrypted using a customer-managed KMS key "docs.aws.amazon.com". This ensures that only authorized principals with access to the KMS key can decrypt the data, enhancing confidentiality and integrity. We created a symmetric CMK (Customer Master Key) for S3 encryption. For example, using the AWS CLI, a new KMS key can be created with default settings for encryption and decryption:
 
+![Image](https://github.com/user-attachments/assets/176b635a-2488-415a-bbd5-6d8402163597)
+
 After creation, this KMS key was configured as the default encryption key (SSE-KMS) for the S3 bucket. All data written to the bucket is automatically encrypted with this KMS key. This approach meets compliance requirements by ensuring encrypted storage of sensitive information "docs.aws.amazon.com", and we can audit key usage (via CloudTrail) to track any encrypt/decrypt events on the data.
 
 S3 Bucket Versioning
