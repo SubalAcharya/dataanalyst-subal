@@ -79,6 +79,7 @@ Deliverables
 
 The AWS-based DAP produced several deliverables demonstrating the successful implementation and insights:
 Annual funding allocations for Housing vs. Childcare (2023–2026). This visualization highlights that Housing projects received the highest funding in 2024 (then stabilized), while Childcare funding rose steadily each year, nearly doubling by 2026.
+
 ![Image](https://github.com/user-attachments/assets/d746ade9-6060-4e2c-a121-32f36374dbe7)
 
 •	Cleaned & Structured Dataset: A refined version of the capital plan data, free of inconsistencies. This is stored in S3 (in a structured folder hierarchy) and cataloged for easy access. It can be re-used for further analysis or combined with other city datasets.
@@ -109,8 +110,14 @@ S3 Bucket Versioning
 
 To preserve data states and provide an additional layer of protection, we enabled S3 Bucket Versioning on the primary data bucket. Versioning allows us to retain multiple versions of each object, so any updates or deletions do not permanently remove data "docs.aws.amazon.com". With versioning turned on, if a file is accidentally deleted or overwritten, the previous version remains available and can be restored "docs.aws.amazon.com". This feature safeguards against accidental data loss during data cleaning or analysis processes. For example, if an ETL job inadvertently modifies or deletes files, we can easily roll back to an earlier version. Enabling versioning was a straightforward but crucial step to ensure data preservation and support data recovery workflows.
 
+![Image](https://github.com/user-attachments/assets/928c9596-adb3-4b56-9e4c-cce966bacb4f)
+
 S3 Bucket Replication
 We also implemented S3 Bucket Replication to achieve cross-bucket (and cross-region) redundancy. Using S3’s replication feature, all objects in the primary bucket are automatically and asynchronously copied to a secondary backup bucket. This secondary bucket serves as a real-time backup, improving fault tolerance and meeting disaster recovery objectives. In practice, we configured a replication rule with an IAM role that allows S3 to replicate objects to the target bucket. Once enabled, any new object uploaded to the primary bucket is replicated to the designated backup bucket (in the same or a different AWS region) without manual intervention "linkedin.com". This protects the data against regional outages or catastrophic failures; even if the primary bucket faces an issue, an up-to-date copy exists in the backup location. (Note: For existing objects created before replication was enabled, S3 Batch Replication can be used to backfill the backup bucket.)
+
+![Image](https://github.com/user-attachments/assets/c1a19b0e-f975-4735-aebb-d4e7311e50a6)
+
+![Image](https://github.com/user-attachments/assets/268147be-f5f3-4b5c-9889-c66649e5ceea)
 
 Overall, these security enhancements (encryption, versioning, and replication) ensure that the City of Vancouver’s DAP data is securely stored and highly durable against loss or corruption.
 
@@ -131,6 +138,9 @@ Freshness:
 
 Ensure data recency by requiring that records are no more than 1000 days (~2.7 years) old. This rule filters out stale data so that the dataset reflects current or recent information, aligning with the city’s need for up-to-date analytics.
 
+![Image](https://github.com/user-attachments/assets/639cbe37-de4b-4488-8d0c-d13e4a3ad9c2)
+
+![Image](https://github.com/user-attachments/assets/c0ce1d40-be5f-4c8e-8886-dadb24c368a4)
 
 These rules were implemented in the ETL pipeline using AWS Glue. The Glue job applied validations to each incoming dataset: any record that did not meet all of the above criteria was flagged. For instance, the ETL script (or Glue Data Quality node) would count nulls in critical fields and drop records if the 5% null threshold was breached, check for duplicate IDs and isolate/remove them beyond the allowed count, and compare dates to ensure they fall within the last 1000 days. By enforcing these conditions, we ensured that only high-quality data proceeds through the pipeline. The thresholds (95% completeness, 99% uniqueness, etc.) can be tuned as needed, but they were chosen as reasonable standards for this project. This data quality evaluation process guarantees that downstream analyses and visualizations are based on reliable, clean data.
 
@@ -148,6 +158,8 @@ Data Quality Validation:
 
 We added an Evaluate Data Quality step (using either Glue Data Quality features or custom PySpark logic) that applies the three rules – completeness, uniqueness, freshness – to each record. This step evaluates every row against the criteria defined in the Data Governance section. Records that pass all rules are tagged as valid, while any record failing one or more rules is tagged as invalid. (For example, a record with a missing project name would be marked invalid for failing the completeness rule.)
 
+![Image](https://github.com/user-attachments/assets/eda3b42a-ce5a-430b-a531-23dfc206ec39)
+
 Conditional Routing (Branching): 
 
 Utilizing Glue’s branching capabilities, the pipeline then splits into two branches based on the validation outcome. One branch collects all Passed records (those that met the quality thresholds), and the other branch collects all Failed records (those that did not). This conditional split cleanly isolates bad data from good data."aws.amazon.com"
@@ -162,6 +174,8 @@ We leveraged Glue’s Autobalance (or coalesce) feature on each branch to contro
 
 Output to S3: 
 
+![Image](https://github.com/user-attachments/assets/e0d08eeb-c186-45be-aaea-939e68641ad1)
+
 Finally, both branches write out the results as CSV files to S3. We configured the Glue sinks so that the Passed records are written to an S3 prefix/folder named “Passed/” and Failed records to a “Failed/” folder. Each run of the pipeline will update these locations. The passed dataset in S3 serves as the cleansed, high-quality data ready for analysis, while the failed dataset can be reviewed separately to identify data issues or to trigger remediation if needed (e.g., ask data providers to fix missing values or remove duplicates).
 
 This ETL pipeline design introduces governance by automatically separating low-quality data from high-quality data "aws.amazon.com". It provides visibility into data quality: stakeholders can inspect the “Failed” bucket to see why records were rejected (e.g., which rule failed) and maintain trust in the “Passed” data. The use of AWS Glue’s visual workflow made it easy to implement and adjust these steps, and the entire process runs in a serverless manner.
@@ -172,6 +186,8 @@ To ensure the platform runs smoothly and to catch any anomalies, we incorporated
 
 Amazon CloudWatch
 
+![Image](https://github.com/user-attachments/assets/8fca2806-729a-40e7-a7d8-5e81cdbd30e9)
+
 We used Amazon CloudWatch for real-time monitoring, metric visualization, and alerting on our AWS resources. CloudWatch provides system-wide observability of AWS applications by collecting metrics and logs, and it allows creation of dashboards and alarms "docs.aws.amazon.com". In our project, we set up a CloudWatch Dashboard to track key S3 metrics over time – for example, the total bucket storage size and number of objects were plotted on a line graph to observe growth. This dashboard updates automatically, giving us a quick view of how the DAP data is expanding or changing.
 
 More importantly, we defined a CloudWatch Alarm on the S3 bucket size. The alarm watches the metric BucketSizeBytes (StandardStorage type) for our bucket on a daily interval. We chose a threshold (e.g., 100,000 bytes) that should not be exceeded under normal conditions for our demo dataset. If the average bucket size goes beyond this limit, the alarm will trigger. The alarm is configured to send an email notification (using an SNS topic subscription) to alert the team. Below is an example of how one could create such an alarm via the AWS CLI:
@@ -180,7 +196,11 @@ In the above snippet, the alarm monitors the bucket’s size (in bytes) daily an
 
 AWS CloudTrail
 
+![Image](https://github.com/user-attachments/assets/1d043c4d-4fd9-4a2c-b8af-a81064dde442)
+
 For auditing and governance, we enabled AWS CloudTrail on the account. CloudTrail records all API calls and events made in the AWS environment
 nops.io. This means every action taken on our AWS resources (S3, Glue, KMS, etc.) is logged, including details on which user or service made the call, the time it occurred, which resources were affected, and other request parameters. CloudTrail is essential for security and compliance – it provides a comprehensive audit trail of changes and access to the data platform. If something goes wrong or if we need to investigate any anomaly (like an unexpected data deletion or an unauthorized access attempt), CloudTrail logs will show the history of actions leading up to that event. We have CloudTrail configured to deliver logs to an S3 bucket for long-term retention and also to integrate with CloudWatch (as a CloudWatch Log) for easier querying. By reviewing CloudTrail logs, we can verify that our data pipeline steps and security measures are being used as intended. In summary, CloudTrail enables governance, compliance, and risk auditing by giving a record of every action on the DAP infrastructure "nops.io". 
+
+![Image](https://github.com/user-attachments/assets/d60c0b52-060a-48c1-8b3e-81d3f19b8b4b)
 
 Overall, the combination of CloudWatch and CloudTrail forms a robust monitoring and auditing framework for the DAP. CloudWatch focuses on performance metrics and operational thresholds (allowing us to react to issues in real time), while CloudTrail focuses on transparency and auditability of user/actions over time. These services ensure that the City of Vancouver’s data platform not only stays performant but also remains secure and compliant through continuous oversight.
