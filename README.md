@@ -149,6 +149,7 @@ These rules were implemented in the ETL pipeline using AWS Glue. The Glue job ap
 
 Data Pipeline Governance Features
 
+![Image](https://github.com/user-attachments/assets/9da5f0df-4043-44c9-aed1-b8b14526c411)
 
 Figure:
 Data quality ETL pipeline in AWS Glue, separating records into “Passed” (curated) and “Failed” (rejected) datasets based on validation rules. To incorporate the above governance rules, we designed a robust data quality check pipeline using AWS Glue Studio (visual ETL). The pipeline workflow is as follows:
@@ -194,6 +195,8 @@ Amazon CloudWatch
 We used Amazon CloudWatch for real-time monitoring, metric visualization, and alerting on our AWS resources. CloudWatch provides system-wide observability of AWS applications by collecting metrics and logs, and it allows creation of dashboards and alarms "docs.aws.amazon.com". In our project, we set up a CloudWatch Dashboard to track key S3 metrics over time – for example, the total bucket storage size and number of objects were plotted on a line graph to observe growth. This dashboard updates automatically, giving us a quick view of how the DAP data is expanding or changing.
 
 More importantly, we defined a CloudWatch Alarm on the S3 bucket size. The alarm watches the metric BucketSizeBytes (StandardStorage type) for our bucket on a daily interval. We chose a threshold (e.g., 100,000 bytes) that should not be exceeded under normal conditions for our demo dataset. If the average bucket size goes beyond this limit, the alarm will trigger. The alarm is configured to send an email notification (using an SNS topic subscription) to alert the team. Below is an example of how one could create such an alarm via the AWS CLI:
+
+![Image](https://github.com/user-attachments/assets/5681503d-ca34-4a81-90fe-72dba93a13a3)
 
 In the above snippet, the alarm monitors the bucket’s size (in bytes) daily and sends a notification if the size goes over 100,000 bytes. This kind of alert helps us proactively manage storage (for instance, cleaning up if a job writes an unexpected large output) and ensures we don’t unknowingly run up storage costs or run out of expected space. CloudWatch alarms can also trigger automated actions, but in our case an email notification was sufficient for awareness.
 
