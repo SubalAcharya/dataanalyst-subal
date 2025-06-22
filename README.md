@@ -1,15 +1,15 @@
 # dataanalyst-subal
-AWS-Based Data Analytic Platform (DAP) for the City of Vancouver
+📊 AWS-Based Data Analytic Platform (DAP) for the City of Vancouver
 
 Project Description
 
 Building a scalable Data Analytic Platform (DAP) on AWS to analyze City of Vancouver funding data, with a focus on housing and childcare allocations. This portfolio project demonstrates how cloud tools can ingest and transform open city data into insights. By leveraging AWS services, the platform efficiently processes the 2023–2026 Capital Plan and 2025 Capital Budget dataset to highlight funding trends in key areas like housing and childcare, enabling data-driven decisions for city planning.
 
-Objective
+🎯Objective
 
 Enable city planners and stakeholders to make data-driven decisions by providing a cloud-based analytics platform. The DAP uses AWS tools to turn raw open data into actionable insights, illustrating trends in capital funding. In particular, it helps visualize how resources are allocated to critical categories (e.g. housing and childcare) over the 2023–2026 plan, supporting strategic planning and investment decisions.
 
-Dataset
+🧾 Dataset
 
 Source: 
 
@@ -26,7 +26,7 @@ License:
 
 The dataset is released under the Open Government Licence – Vancouver, a permissive open-data license. This means it can be freely used, modified, and shared for any purpose with proper attribution (e.g. including the statement “Contains information licensed under the Open Government Licence – Vancouver.”). The license prohibits use of any personal or confidential information and disallows implying City endorsement. In short, the data is open and royalty-free for public use, aligning with the City’s open data policy.
 
-Methodology
+🔍 Methodology
 
 The DAP follows a structured ETL/ELT pipeline to convert raw data into meaningful insights. The overall architecture is illustrated below, showing how data flows from ingestion to analysis in AWS:
 Architecture of the AWS-based DAP: Raw open data is stored in Amazon S3, cleaned with AWS Glue DataBrew, cataloged in AWS Glue Data Catalog via a crawler, and queried using Amazon Athena. Processed results and queries can be visualized or saved back to S3. This serverless pipeline is scalable and cost-efficient.
@@ -57,7 +57,7 @@ Finally, Amazon Athena was used to query the cataloged data and summarize key in
 
 Athena quickly scanned the data and returned the results, confirming that housing investments were highest in 2024, then leveled off, whereas childcare funding grew each year and peaked in 2026. These query results were then used for visualization and further interpretation.
 
-Tools and Technologies
+🧰 Tools and Technologies
 
 The project utilized the following AWS services and tools:
 
@@ -75,7 +75,7 @@ The project utilized the following AWS services and tools:
 
 •	AWS Pricing Calculator: An online tool used to estimate the AWS costs of the solution. It helped calculate the expected monthly and annual expenses for S3 storage, DataBrew, Glue, Athena, etc., to ensure the platform remains cost-effective.
 
-Deliverables
+📦 Deliverables
 
 The AWS-based DAP produced several deliverables demonstrating the successful implementation and insights:
 Annual funding allocations for Housing vs. Childcare (2023–2026). This visualization highlights that Housing projects received the highest funding in 2024 (then stabilized), while Childcare funding rose steadily each year, nearly doubling by 2026.
@@ -95,6 +95,9 @@ Budget
 These costs assume light usage consistent with this project (e.g. storing a few megabytes of data on S3, running DataBrew jobs for profiling/cleaning a small dataset, and executing several Athena queries per month). The platform was designed with cost-efficiency in mind – by using serverless and on-demand AWS services, the monthly cost is kept around $1–$2, making it highly affordable for the City. There were no upfront infrastructure costs, and charges scale with usage. This low operating cost (~$17/year in this scenario) demonstrates that even small municipal teams can leverage cloud analytics within limited budgets.
 
 Overall, the AWS-Based DAP for the City of Vancouver successfully showcases how open data can be transformed into valuable insights with minimal cost and effort. It provides a template for future city analytics projects, combining open data and cloud technology to inform policy and investment decisions.
+
+
+📋 Data Quality Control Analysis
 
 Data Security
 
